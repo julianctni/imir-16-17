@@ -34,18 +34,26 @@ for i in range(1, 10):
 	if (content[0] != "#"):
 		contentId = getContentId(content)
 		print(str(i)+"-"+contentId)
-		print (getAbstract(content))
+		abstract = getAbstract(content)
+		hasBegin = False
+		begin = 0
+		end = 0
+		while i < len(abstract):
+			if abstract[i] == ' ':
+				if hasBegin == True:
+					end = i
+					if abstract[i-1] == ',' or abstract[i-1] == '.' or abstract[i-1] == '(' or abstract[i-1] == ')' or abstract[i-1] == '"' or abstract[i-1] == '-' or abstract[i-1] == ';':
+						print(abstract[begin:end-1])
+					else:
+						print(abstract[begin:end])
+
+					if abstract[i+1] == ',' or abstract[i+1] == '.' or abstract[i+1] == '(' or abstract[i+1] == ')' or abstract[i+1]== '"' or abstract[i+1] == '-' or abstract[i+1] == ';':					
+						begin = end+2
+					else:
+						begin = end+1
+				else:
+					begin = i+1
+					hasBegin = True
+			i += 1
+		#print (getAbstract(content))
 		print("")
-
-
-
-
-
-
-
-
-
-
-
-
-

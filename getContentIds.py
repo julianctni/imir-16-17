@@ -6,7 +6,7 @@ x = file_input.readlines()
 numId = 0
 
 deleteChars = [')','(','[',']','"', '“', '„', '\\','=', '...', '↑']
-replaceChars = ['- ', '. ', ', ',',', ': ', '; ', '! ', '? ', ' - ', ' – ', ':', '/']
+replaceChars = ['- ', '. ', '.', ', ',',', ': ', '; ', '! ', '? ', ' - ', ' – ', ':', '/']
 
 
 def getContentId(text):

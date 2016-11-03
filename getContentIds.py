@@ -6,7 +6,7 @@ x = file_input.readlines()
 numId = 0
 
 deleteChars = [')','(','[',']','"', '“', '„', '\\','=', '...', '↑']
-replaceChars = ['- ', '. ', '.', ', ',',', ': ', '; ', '! ', '? ', ' - ', ' – ', ':', '/']
+replaceChars = ['.',',', ':', ';', '!', '?', '-', '–', '/']
 
 
 def getContentId(text):
@@ -26,13 +26,14 @@ def getAbstract(text):
 	for i in range (0,len(text)):
 		#if (foundAbstract and text[i] == '.' and text[i+1] =='"' and text[i+2] =='@' and text[i+3] =='d'):
 		if (foundAbstract and text[i] == '@' and text[i+1] =='d' and text[i+2] =='e'):
-			for j in range (0,len(deleteChars)):
-				abstract = abstract.replace(deleteChars[j], "")
-			for k in range (0,len(replaceChars)):
-				abstract = abstract.replace(replaceChars[k], " ")
 			return abstract[0:len(abstract)-1]
 		elif (foundAbstract):
-			abstract += text[i]
+			temp = text[i]
+			for j in range (0,len(deleteChars)):
+				temp = temp.replace(deleteChars[j], "")
+			for k in range (0,len(replaceChars)):
+				temp = temp.replace(replaceChars[k], " ")
+			abstract += temp
 		elif (text[i] == '"' and text[i-1] == ' ' and text[i-2] == '>'):
 			foundAbstract = True
 
@@ -49,23 +50,16 @@ def createIndex(abstract, id):
 						if (str(id) not in readFile.read()):
 							with open("index/"+abstract[begin:end],'a') as writeFile:
 								writeFile.write(id+"\n")
-
-
-			
-			#INDEXIERUNG HIER
-			#print(abstract[begin:end])
-
 			begin = end+1
 		i += 1
 
-	
+
 for i in range(0, len(x)):
 	content = x[i].lower()
 	contentId = ""
 	if (content[0] != "#"):
 		contentId = getContentId(content)
-		print(str(i)+"-"+contentId)
+		if (i%1000 == 0):
+			print(str(i)+"-"+contentId)
 		abstract = getAbstract(content)
-		#print(abstract)
 		createIndex(abstract, contentId)
-		print("")

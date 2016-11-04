@@ -29,7 +29,7 @@ def createIndex(abstract, id):
 		index_dict[word].add(id)
 
 start = timer()
-for i in range(0, 1000):
+for i in range(0, len(x)):
     content = x[i].lower()
     if (content[0] != "#"):
         content_id, abstract = parseLine(content)

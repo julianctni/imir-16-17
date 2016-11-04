@@ -29,14 +29,13 @@ def createIndex(abstract, id):
 		index_dict[word].add(id)
 
 start = timer()
-for i in range(0, len(x)):
-	content = x[i].lower()
-	contentId = ""
-	if (content[0] != "#"):
-		content_id, abstract = parseLine(content)
+for i in range(0, 1000):
+    content = x[i].lower()
+    if (content[0] != "#"):
+        content_id, abstract = parseLine(content)
         createIndex(abstract, content_id)
-		if (i % 1000 == 0):
-			print(str(i) + "-" + content_id)
+        if (i % 1000 == 0):
+            print(str(i) + "-" + content_id)
 
 for word, ids in index_dict.items():
 	delimiter = ": "
@@ -47,4 +46,4 @@ file_output.close()
 end = timer()
 elapsed_time = end - start
 
-print("Time to index 1000 abstracts: %.2f" % elapsed_time)
+print("Time to index %i abstracts: %.2f" % (len(x), elapsed_time))

@@ -38,8 +38,11 @@ for i in range(0, len(x)):
         if (i % 1000 == 0):
             print(str(i) + "-" + content_id)
 
-for word, ids in index_dict.items():
+# Sort dictionary by the count of abstract ids in a descending order.
+# This is gonna take some time...
+for word in sorted(index_dict, key=lambda word: len(index_dict[word]), reverse=True):
     delimiter = ": "
+    ids = index_dict[word]
     file_output.write(word + delimiter + ", ".join(map(str, ids)) + "\n")
 
 file_output.close()

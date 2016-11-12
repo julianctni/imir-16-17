@@ -23,18 +23,18 @@ def parseLine(text):
 			abstract = abstract.replace(char, " ")
 		return content_id, abstract
 
-def createIndex(abstract, id):
+def createIndex(abstract, line_number):
 	words = abstract.split()
 	for index, word in enumerate(words):
-		id_index = (id, index)
-		index_dict[word].add(id_index)
+		line_index = (line_number, index)
+		index_dict[word].add(line_index)
 
 start = timer()
 for i in range(0, len(x)):
     content = x[i].lower()
     if (content[0] != "#"):
         content_id, abstract = parseLine(content)
-        createIndex(abstract, content_id)
+        createIndex(abstract, i)
         if (i % 1000 == 0):
             print(str(i) + "-" + content_id)
 

@@ -4,15 +4,10 @@ from collections import defaultdict
 
 index_dict = defaultdict(set)
 
-file_input = open('long_abstracts_de.ttl', 'r')
-file_output = open('outputfile.txt', 'w')
-
-x = file_input.readlines()
-
 deleteChars = [')','(','[',']','"', '“', '„', '\\','=', '...', '↑']
 replaceChars = ['.',',', ':', ';', '!', '?', '-', '–', '/']
 
-def parseLine(text):
+def parse_line(text):
 	result = re.search('resource\/(.*)>\s<[a-zA-Z:\/\.]*>\s"(.*)"@de', text)
 	if result:
 		content_id = result.group(1)
@@ -23,31 +18,51 @@ def parseLine(text):
 			abstract = abstract.replace(char, " ")
 		return content_id, abstract
 
-def createIndex(abstract, line_number):
+def create_index(abstract, line_number):
 	words = abstract.split()
 	for index, word in enumerate(words):
 		line_index = (line_number, index)
 		index_dict[word].add(line_index)
 
-start = timer()
-for i in range(0, len(x)):
-    content = x[i].lower()
-    if (content[0] != "#"):
-        content_id, abstract = parseLine(content)
-        createIndex(abstract, i)
-        if (i % 1000 == 0):
-            print(str(i) + "-" + content_id)
 
-# Sort dictionary by the count of abstract ids in a descending order.
-# This is gonna take some time...
-for word in sorted(index_dict, key=lambda word: len(index_dict[word]), reverse=True):
+def parse_file():
+    file_input = open('long_abstracts_de.ttl', 'r')
+    lines = file_input.readlines()
+    count = len(lines)
+    print("Parsing file...")
+
+    for i in range(0, count):
+        line = lines[i].lower()
+        if (line[0] != "#"):
+            content_id, abstract = parse_line(line)
+            create_index(abstract, i)
+            if (i % 1000 == 0):
+                print(str(i) + "-" + content_id)
+
+    print("Finished parsing file")
+    file_input.close()
+    return count
+
+def write_index():
+    file_output = open('outputfile.txt', 'w')
     delimiter = ": "
-    ids = index_dict[word]
-    file_output.write(word + delimiter + ", ".join(map(str, ids)) + "\n")
+    print("Writing index to file...")
 
-file_output.close()
+    # Sort dictionary by the count of abstract ids in a descending order.
+    # This is gonna take some time...
+    for word in sorted(index_dict, key=lambda word: len(index_dict[word]), reverse=True):
+        ids = index_dict[word]
+        file_output.write(word + delimiter + ", ".join(map(str, ids)) + "\n")
 
-end = timer()
-elapsed_time = end - start
+    print("Finished writing index to file")
+    file_output.close()
 
-print("Time to index %i abstracts: %.2f" % (len(x), elapsed_time))
+def main():
+    start = timer()
+    line_count = parse_file()
+    write_index()
+    end = timer()
+    elapsed_time = end - start
+    print("Time to index %i abstracts: %.2f s" % (line_count, elapsed_time))
+
+if __name__ == "__main__": main()

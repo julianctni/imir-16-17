@@ -25,8 +25,9 @@ def parseLine(text):
 
 def createIndex(abstract, id):
 	words = abstract.split()
-	for word in words:
-		index_dict[word].add(id)
+	for index, word in enumerate(words):
+		id_index = (id, index)
+		index_dict[word].add(id_index)
 
 start = timer()
 for i in range(0, len(x)):
@@ -38,8 +39,8 @@ for i in range(0, len(x)):
             print(str(i) + "-" + content_id)
 
 for word, ids in index_dict.items():
-	delimiter = ": "
-	file_output.write(word + delimiter + ", ".join(ids) + "\n")
+    delimiter = ": "
+    file_output.write(word + delimiter + ", ".join(map(str, ids)) + "\n")
 
 file_output.close()
 

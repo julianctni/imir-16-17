@@ -36,7 +36,7 @@ def parse_file():
     count = len(lines)
     print("Parsing file...")
 
-    for i in range(0, 1000):
+    for i in range(0, count):
         print_progress(i, count)
 
         line = lines[i].lower()

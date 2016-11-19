@@ -26,8 +26,7 @@ def parse_line(text):
 def create_index(abstract, line_number):
 	words = abstract.split()
 	for index, word in enumerate(words):
-		line_index = (line_number, index)
-		index_dict[word].add(line_index)
+		index_dict[word].add(line_number)
 
 
 def parse_file():

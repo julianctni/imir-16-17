@@ -43,24 +43,6 @@ class OperatorNode(Node):
         self.operator = operator
         self.result = []
 
-    def evaluate(self, left, right):
-        """
-        Excludes results from NOT operator nodes.
-
-        Args:
-            left: the left child of the current node.
-            right: the right child of the current node.
-        """
-        excludes = []
-
-        if isinstance(left, NotOperatorNode):
-            excludes += left.result
-        if isinstance(right, NotOperatorNode):
-            excludes += right.result
-
-        for exclude in excludes:
-            self.result.remove(exclude)
-
 
 class AndOperatorNode(OperatorNode):
     def __init__(self):
@@ -78,8 +60,6 @@ class AndOperatorNode(OperatorNode):
         """
         if left is not None and right is not None:
             self.result += common_elements(left.result, right.result)
-
-            OperatorNode.evaluate(self, left, right)
 
 
 class OrOperatorNode(OperatorNode):
@@ -99,13 +79,12 @@ class OrOperatorNode(OperatorNode):
         if left is not None and right is not None:
             self.result += unique_elements(left.result, right.result)
 
-            OperatorNode.evaluate(self, left, right)
-
 
 class NotOperatorNode(OperatorNode):
-    def __init__(self):
+    def __init__(self, item_count):
         OperatorNode.__init__(self, "NOT")
         self.operator = "NOT"
+        self.range = set(range(0, item_count))
 
     def evaluate(self, left, _):
         """
@@ -117,8 +96,8 @@ class NotOperatorNode(OperatorNode):
             _: the right child is ignored.
         """
         if left is not None:
-            excludes = set(left.result)
-            self.result += excludes
+            not_set = self.range - set(left.result)
+            self.result += not_set
 
 
 class BinaryTree:

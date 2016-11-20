@@ -1,14 +1,4 @@
-def common_elements(list1, list2):
-    result = []
-    for element in list1:
-        if element in list2:
-            result.append(element)
-    return result
-
-
-def unique_elements(list1, list2):
-    result = set(list1 + list2)
-    return list(result)
+from utilities import common_elements, unique_elements
 
 
 class Node(object):

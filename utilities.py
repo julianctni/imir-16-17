@@ -32,10 +32,7 @@ def list_duplicates(seq):
     tally = defaultdict(list)
     for i,item in enumerate(seq):
         tally[item].append(i)
-
-    for key, locations in tally.items():
-        if len(locations) > 0:
-            return key, locations
+    return ((key,locs) for key, locs in tally.items() if len(locs) > 0)
 
 
 def unique_elements(list1, list2):

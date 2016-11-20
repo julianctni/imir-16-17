@@ -1,7 +1,6 @@
 import re
-from operator import itemgetter
-from index_parser import parse_line
-from utilities import is_int, common_elements, indices
+from utilities import is_int, group_search_results
+from ast import literal_eval as make_tuple
 from collections import defaultdict
 from tree import *
 
@@ -20,10 +19,11 @@ def search(term):
         content = index_line.split(": ")
         word = content[0]
         if word == term:
-            abstracts = [int(n) for n in content[1].split(", ")]
+            abstracts = make_tuple("[" + content[1] + "]")
             for abstract in abstracts:
-                line_number = abstract
-                result.append(line_number)
+                content_id = abstract[0]
+                positions = abstract[1]
+                result.append((content_id, positions))
             break
     if len(result) == 0:
         print("Could not find any abstracts with the provided search term '%s'." % term)
@@ -56,41 +56,26 @@ def search_phrase(phrase):
         An array of abstract line numbers that contain the given phrase
     """
     results = []
-    search_results = []
-    words_positions = defaultdict(list)
+    search_results = defaultdict(list)
     words = phrase.split()
 
     # Search for every word in the phrase and store the search results
     for word in words:
-        search_results.append(search(word))
+        search_results[word] = search(word)
 
-    # Create a union from the search results
-    common_results = search_results[0]
-    for result in search_results:
-        common_results = common_elements(common_results, result)
+    search_list = []
+    for word, result in search_results.items():
+        for abstract in result:
+            content_id, positions = abstract
+            search_list.append((content_id, word, positions))
 
-    for abstract_line in common_results:
-        # Get the whole abstract from the abstract file
-        abstract = abstract_lines[abstract_line].lower()
-        content_id, abstract_content = parse_line(abstract)
-        words_in_abstract = abstract_content.split()
+    grouped_search_results = group_search_results(search_list, len(words))
 
-        for word in words:
-            # Get every position of the word in the abstract
-            word_positions = indices(words_in_abstract, word)
+    for content_id, value in grouped_search_results.items():
+        found_at = find_consecutive_positions(value, words)
 
-            for position in word_positions:
-                word_position = (word, position)
-                # Store word and its position for all abstracts
-                words_positions[abstract_line].append(word_position)
-
-    for abstract_line, positions in words_positions.items():
-        # Sort tuples by their position number in an ascending order
-        positions = sorted(positions, key=itemgetter(1))
-        found = find_consecutive_positions(positions, words)
-
-        if found:
-            results.append(abstract_line)
+        if len(found_at) > 0:
+            results.append((content_id, found_at))
 
     return results
 
@@ -111,7 +96,7 @@ def find_consecutive_positions(tuple_list, words, position=None):
     """
     # Stop the recursion and return true, if the words appear consecutively.
     if len(words) == 0:
-        return True
+        return position
 
     word = words[0]
     # Get all tuples that contain the first word
@@ -120,18 +105,22 @@ def find_consecutive_positions(tuple_list, words, position=None):
     # The position parameter is not set for the first call of the function
     if position is not None:
         # Get tuples that appear at the given position
-        tuples = [tuple for tuple in tuples if tuple[1] == position]
+        tuples = [tuple for tuple in tuples if position in tuple[1]]
 
     # Stop the recursion and return false, if the words do not appear consecutively.
     if len(tuples) == 0:
-        return False
+        return None
 
+    found_at = []
     for tuple in tuples:
-        position = tuple[1]
-        # Call function recursively with an updated list of words, where the first
-        # word is removed, and an incremented position.
-        if find_consecutive_positions(tuple_list, words[1:], position + 1):
-            return True
+        positions = tuple[1]
+        for index, position in enumerate(positions):
+            # Call function recursively with an updated list of words, where the first
+            # word is removed, and an incremented position.
+            if find_consecutive_positions(tuple_list, words[1:], position + 1):
+                found_at.append(position)
+
+    return found_at
 
 
 def prepare_query(query):
@@ -245,9 +234,8 @@ def print_results(results):
     print("Total results: %i" % len(results))
     print("Found in:")
     for result in results:
-        abstract = abstract_lines[result]
-        content_id, _ = parse_line(abstract)
-        print(content_id)
+        content_id, positions = result
+        print("%s (%i times)" % (content_id, len(positions)))
     print("------------------")
 
 

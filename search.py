@@ -255,10 +255,10 @@ def main():
     global abstract_file, abstract_lines, abstract_count
     global index_file, index_lines, index_count
     global search_blocks
-    abstract_file = open('long_abstracts_de.ttl', 'r')
+    abstract_file = open('long_abstracts_de.ttl', 'r', encoding='utf-8', errors='ignore')
     abstract_lines = abstract_file.readlines()
     abstract_count = len(abstract_lines)
-    index_file = open('outputfile.txt', 'r')
+    index_file = open('outputfile.txt', 'r', encoding='utf-8', errors='ignore')
     index_lines = index_file.readlines()
     index_count = len(index_lines)
 

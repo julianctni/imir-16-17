@@ -30,7 +30,7 @@ def create_index(abstract, line_number):
 
 
 def parse_file():
-    file_input = open('long_abstracts_de.ttl', 'r')
+    file_input = open('long_abstracts_de.ttl', 'r', encoding='utf-8', errors='ignore')
     lines = file_input.readlines()
     count = len(lines)
     print("Parsing file...")
@@ -48,7 +48,7 @@ def parse_file():
     return count
 
 def write_index():
-    file_output = open('outputfile.txt', 'w')
+    file_output = open('outputfile.txt', 'w', encoding='utf-8', errors='ignore')
     delimiter = ": "
     count = len(index_dict)
     i = 0

@@ -73,8 +73,7 @@ def search_phrase(phrase):
 
     search_list = []
     for word, result in search_results.items():
-        for abstract in result:
-            content_id, positions = abstract
+        for content_id, positions in result.items():
             search_list.append((content_id, word, positions))
 
     grouped_search_results = group_search_results(search_list, len(words))

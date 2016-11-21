@@ -9,6 +9,19 @@ search_blocks = []
 
 
 def search(term):
+    """
+    Searches for a given term in the corresponding index file. The index file
+    is determined by the initial character of the given term. After the file
+    has been opened, each line is searched for the term. If it has been found,
+    the abstract ids and the positions of the term in the abstracts are parsed
+    and added to the result dictionary.
+
+    Args:
+        term: one word
+
+    Returns:
+        returns a dictionary of abstract ids that contain the given term
+    """
     print("Searching for %s" % term)
 
     initial_char = term[0]
@@ -44,22 +57,20 @@ def search_phrase(phrase):
     """
     Searches for the given phrase. In a first step, every word in the phrase will be
     searched separately. The search results from the individual search queries are
-    merged by a union. The resulting set contains only abstracts that contain all
-    words in the search phrase. The abstracts are referenced by their corresponding
-    line numbers in the abstract_file.
-    After that every abstract is pulled out and parsed from the abstract_file. For each
-    word from the abstract its position inside the abstract is retrieved and stored
-    inside a dictionary under the abstract line number.
-    The entries in the dictionary are sorted afterwards by their positions in a ascending
-    order and passed to the find_consecutive_positions-function, which examines if
-    the words in the phrase appear consecutively. If this is the case, the line number
-    of the corresponding abstract is added to the result set of the function.
+    added to a dictionary, which is flattened out to a list of search results that
+    consist of the abstract id, the word and its positions in the abstract.
+    After that list entries with the same abstract id are grouped together and stored
+    alongside the words and their positions in the abstract.
+    The entries in the dictionary are passed to the find_consecutive_positions-function,
+    which examines if the words in the phrase appear consecutively. If this is the case,
+    the id of the corresponding abstract and the word positions are added to the result
+    set.
 
     Args:
         phrase: a group of words that appear in their described order
 
     Returns:
-        An array of abstract line numbers that contain the given phrase
+        returns a dictionary of abstract ids that contain the given phrase
     """
     results = defaultdict(list)
     search_results = defaultdict(list)
@@ -101,7 +112,7 @@ def find_consecutive_positions(tuple_list, words, position=None):
         position: a number that represents the position where the next word is to be expected.
 
     Returns:
-        returns true, if the given words appear consecutively or false if not.
+        returns a list of the positions, where the group of words have been found
     """
     # Stop the recursion and return true, if the words appear consecutively.
     if len(words) == 0:
@@ -116,7 +127,7 @@ def find_consecutive_positions(tuple_list, words, position=None):
         # Get tuples that appear at the given position
         tuples = [tuple for tuple in tuples if position in tuple[1]]
 
-    # Stop the recursion and return false, if the words do not appear consecutively.
+    # Stop the recursion and return None, if the words do not appear consecutively.
     if len(tuples) == 0:
         return None
 
@@ -167,6 +178,17 @@ def prepare_query(query):
 
 
 def return_search_function(term):
+    """
+    Determines the appropriate search function for a given term. If the term is
+    enclosed by parenthesis, it is expected to be a phrase. Therefore the function,
+    which is responsible for phrase search, is returned.
+
+    Args:
+        term: one word or a phrase, which is enclosed by parenthesis
+
+    Returns:
+        returns the appropriate search function for a given term
+    """
     first = term[0]
     last = term[-1]
 

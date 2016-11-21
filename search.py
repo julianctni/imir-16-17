@@ -251,8 +251,13 @@ def main():
     index_count = len(index_lines)
 
     while True:
-        # Sample query: ((bonobo AND sprache) AND (NOT völkermord))
-        # Sample phrase query: "mächtigsten Frauen der Welt"
+        print("")
+        print("Please take a look of the following query types you may use.")
+        print("------------------------------------------------------------")
+        print("Option A: Searching for a single term: obama")
+        print('Option B: Searching for a phrase: "american president"')
+        print('Option C: Combination of terms/phrases and Boolean operators [OR/AND/NOT]: (obama AND (NOT "american president"))')
+        print("------------------------------------------------------------")
         raw_query = input("Enter search query: ").lower()
         prepare_query(raw_query)
         query_tree = build_tree(search_blocks[-1])

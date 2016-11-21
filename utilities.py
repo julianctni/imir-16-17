@@ -59,6 +59,15 @@ def open_file(file_name, mode="r"):
 
 
 def group_search_results(results, length):
+    """
+    This function groups the search results with its correspondig abstract ids.
+    The groups then contain the words with its positions and frequencys
+
+    Args:
+        results: search results
+        length: length of the phrase
+
+    """
     result_dict = defaultdict(list)
     sorted_results = sorted(results)
 
@@ -148,7 +157,7 @@ def indices(lst, element):
 
 def is_int(value):
     """
-    Returns True if value is int, otherwise False
+    Returns True if value is an Integer, otherwise False
     """
     try:
         int(value)

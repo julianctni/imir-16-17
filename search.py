@@ -17,7 +17,7 @@ def search(term):
     index_lines = index_file.readlines()
     index_count = len(index_lines)
 
-    result = []
+    result = defaultdict(list)
     for i in range(0, index_count):
         index_line = index_lines[i]
         content = index_line.split(": ")
@@ -27,7 +27,7 @@ def search(term):
             for abstract in abstracts:
                 content_id = abstract[0]
                 positions = list(map(int, abstract[1].split(", ")))
-                result.append((content_id, positions))
+                result[content_id] = positions
             break
     if len(result) == 0:
         print("Could not find any abstracts with the provided search term '%s'." % term)
@@ -61,7 +61,7 @@ def search_phrase(phrase):
     Returns:
         An array of abstract line numbers that contain the given phrase
     """
-    results = []
+    results = defaultdict(list)
     search_results = defaultdict(list)
     words = phrase.split()
 
@@ -83,7 +83,7 @@ def search_phrase(phrase):
         found_at = find_consecutive_positions(value, words)
 
         if len(found_at) > 0:
-            results.append((content_id, found_at))
+            results[content_id] = found_at
 
     print("Finished calculating search results")
 
@@ -242,8 +242,7 @@ def build_tree(search_block):
 
 def print_results(results):
     print("Found in:")
-    for result in results:
-        content_id, positions = result
+    for content_id, positions in results.items():
         print("%s (%i times)" % (content_id, len(positions)))
     print("------------------")
     print("Total results: %i" % len(results))

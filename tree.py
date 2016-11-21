@@ -1,4 +1,5 @@
 from utilities import common_elements, unique_elements
+from collections import defaultdict
 
 
 class Node(object):
@@ -14,7 +15,7 @@ class TermNode(Node):
         Node.__init__(self, term)
         self.term = term
         self.search_function = search_function
-        self.result = []
+        self.result = defaultdict(list)
 
     def search(self):
         """
@@ -24,14 +25,14 @@ class TermNode(Node):
         result = self.search_function(self.term)
 
         if result is not None and len(result) > 0:
-            self.result += result
+            self.result = result
 
 
 class OperatorNode(Node):
     def __init__(self, operator):
         Node.__init__(self, operator)
         self.operator = operator
-        self.result = []
+        self.result = defaultdict(list)
 
 
 class AndOperatorNode(OperatorNode):
@@ -49,7 +50,7 @@ class AndOperatorNode(OperatorNode):
             right: the right child of the current node.
         """
         if left is not None and right is not None:
-            self.result += common_elements(left.result, right.result)
+            self.result = common_elements(left.result, right.result)
 
 
 class OrOperatorNode(OperatorNode):
@@ -67,7 +68,7 @@ class OrOperatorNode(OperatorNode):
             right: the right child of the current node.
         """
         if left is not None and right is not None:
-            self.result += unique_elements(left.result, right.result)
+            self.result = unique_elements(left.result, right.result)
 
 
 class NotOperatorNode(OperatorNode):
@@ -86,12 +87,12 @@ class NotOperatorNode(OperatorNode):
             _: the right child is ignored.
         """
         if left is not None:
-            id_list = list(map(lambda x: x[0], left.result))
+            id_list = set(left.result.keys())
 
-            not_set = self.ids - set(id_list)
-            not_set = list(map(lambda x: (x, []), not_set))
+            not_set = self.ids - id_list
+            not_set = dict.fromkeys(not_set, [])
 
-            self.result += not_set
+            self.result = not_set
 
 
 class BinaryTree:

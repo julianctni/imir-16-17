@@ -67,44 +67,33 @@ def group_words_with_positions(seq):
     return ((key,locs) for key, locs in tally.items() if len(locs) > 0)
 
 
-def common_elements(list1, list2):
-    temp_list1 = list(map(lambda x: x[0], list1))
-    temp_list2 = list(map(lambda x: x[0], list2))
+def common_elements(dict1, dict2):
+    dict1_set = set(dict1)
+    dict2_set = set(dict2)
 
-    result = []
-    for i, element in enumerate(temp_list1):
-        j = temp_list2.index(element) if element in temp_list2 else -1
-        if j >= 0:
-            positions = list1[i][1] + list2[j][1]
-            temp_list2.pop(j)
+    result = defaultdict(list)
 
-            result.append((element, positions))
-        else:
-            position = list1[i][1]
-            result.append((element, position))
+    for key in dict1_set.intersection(dict2_set):
+        positions1 = dict1[key]
+        positions2 = dict2[key]
+
+        result[key] = positions1 + positions2
 
     return result
 
 
-def unique_elements(list1, list2):
-    temp_list1 = list(map(lambda x: x[0], list1))
-    temp_list2 = list(map(lambda x: x[0], list2))
+def unique_elements(dict1, dict2):
+    keys1 = list(dict1.keys())
+    keys2 = list(dict2.keys())
 
-    result = []
-    for i, element in enumerate(temp_list1):
-        j = temp_list2.index(element) if element in temp_list2 else -1
-        if j >= 0:
-            positions = list1[i][1] + list2[j][1]
-            temp_list2.pop(j)
+    result = defaultdict(list)
+    unique_keys = set(keys1 + keys2)
 
-            result.append((element, positions))
-        else:
-            position = list1[i][1]
-            result.append((element, position))
+    for key in unique_keys:
+        positions1 = dict1[key]
+        positions2 = dict2[key]
 
-    for i, element in enumerate(temp_list2):
-        position = list2[i][1]
-        result.append((element, position))
+        result[key] = positions1 + positions2
 
     return result
 

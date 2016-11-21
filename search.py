@@ -1,17 +1,22 @@
 import re
-from utilities import is_int, group_search_results
+from utilities import is_int, group_search_results, file_name_for_char, open_file
 from ast import literal_eval as make_tuple
 from collections import defaultdict
 from tree import *
 
 
-abstract_file, abstract_lines, abstract_count = (None, None, None)
-index_file, index_lines, index_count = (None, None, None)
+abstract_ids_file, abstract_ids_lines = (None, None)
 search_blocks = []
 
 
 def search(term):
     print("Searching for %s" % term)
+
+    initial_char = term[0]
+    file_name = file_name_for_char(initial_char)
+    index_file = open_file(file_name)
+    index_lines = index_file.readlines()
+    index_count = len(index_lines)
 
     result = []
     for i in range(0, index_count):
@@ -30,6 +35,8 @@ def search(term):
 
     print("Total resources: %i" % len(result))
     print("------------------")
+
+    index_file.close()
 
     return result
 
@@ -189,7 +196,7 @@ def build_tree(search_block):
         right = result.group(3)
 
         if left is None:
-            tree.set_node_value(NotOperatorNode(abstract_count))
+            tree.set_node_value(NotOperatorNode(abstract_ids_lines))
 
             if is_int(right):
                 right = int(right)
@@ -231,24 +238,20 @@ def build_tree(search_block):
 
 
 def print_results(results):
-    print("Total results: %i" % len(results))
     print("Found in:")
     for result in results:
         content_id, positions = result
         print("%s (%i times)" % (content_id, len(positions)))
     print("------------------")
+    print("Total results: %i" % len(results))
+    print("------------------")
 
 
 def main():
-    global abstract_file, abstract_lines, abstract_count
-    global index_file, index_lines, index_count
+    global abstract_ids_file, abstract_ids_lines
     global search_blocks
-    abstract_file = open('long_abstracts_de.ttl', 'r', encoding='utf-8', errors='ignore')
-    abstract_lines = abstract_file.readlines()
-    abstract_count = len(abstract_lines)
-    index_file = open('outputfile.txt', 'r', encoding='utf-8', errors='ignore')
-    index_lines = index_file.readlines()
-    index_count = len(index_lines)
+    abstract_ids_file = open_file('index/abstractids.txt')
+    abstract_ids_lines = abstract_ids_file.read().splitlines()
 
     while True:
         print("")
@@ -265,7 +268,6 @@ def main():
         print_results(results)
         search_blocks = []
 
-    abstract_file.close()
-    index_file.close()
+    abstract_ids_file.close()
 
 if __name__ == "__main__": main()

@@ -71,10 +71,10 @@ class OrOperatorNode(OperatorNode):
 
 
 class NotOperatorNode(OperatorNode):
-    def __init__(self, item_count):
+    def __init__(self, ids):
         OperatorNode.__init__(self, "NOT")
         self.operator = "NOT"
-        self.range = set(range(0, item_count))
+        self.ids = set(ids)
 
     def evaluate(self, left, _):
         """
@@ -86,7 +86,11 @@ class NotOperatorNode(OperatorNode):
             _: the right child is ignored.
         """
         if left is not None:
-            not_set = self.range - set(left.result)
+            id_list = list(map(lambda x: x[0], left.result))
+
+            not_set = self.ids - set(id_list)
+            not_set = list(map(lambda x: (x, []), not_set))
+
             self.result += not_set
 
 

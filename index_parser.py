@@ -1,6 +1,6 @@
 import re
 from timeit import default_timer as timer
-from utilities import list_duplicates, open_file, characters, character_group_count, characters_group
+from utilities import group_words_with_positions, open_file, characters, character_group_count, characters_group
 from collections import defaultdict
 
 
@@ -30,7 +30,7 @@ def parse_line(text):
 
 def create_index(abstract, content_id, character_group, group_index):
     words = abstract.split()
-    word_groups = list_duplicates(words)
+    word_groups = group_words_with_positions(words)
     for group in word_groups:
         word = group[0]
         positions = group[1]

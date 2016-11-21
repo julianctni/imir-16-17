@@ -60,7 +60,7 @@ def group_search_results(results, length):
     return result_dict
 
 
-def list_duplicates(seq):
+def group_words_with_positions(seq):
     tally = defaultdict(list)
     for i,item in enumerate(seq):
         tally[item].append(i)

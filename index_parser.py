@@ -243,6 +243,7 @@ def main():
 			write_abstract_ids(abstract_ids)
 
 		write_word_index(group_index)
+		print("------------------------------------------------------------")
 
 	end = timer()
 	elapsed_time = end - start

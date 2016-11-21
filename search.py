@@ -1,6 +1,5 @@
 import re
 from utilities import is_int, group_search_results, file_name_for_char, open_file
-from ast import literal_eval as make_tuple
 from collections import defaultdict
 from tree import *
 
@@ -24,10 +23,10 @@ def search(term):
         content = index_line.split(": ")
         word = content[0]
         if word == term:
-            abstracts = make_tuple("[" + content[1] + "]")
+            abstracts = re.findall("\(\'([^']*)\',\s\[([^)]*)\]\)", content[1])
             for abstract in abstracts:
                 content_id = abstract[0]
-                positions = abstract[1]
+                positions = list(map(int, abstract[1].split(", ")))
                 result.append((content_id, positions))
             break
     if len(result) == 0:
@@ -70,6 +69,8 @@ def search_phrase(phrase):
     for word in words:
         search_results[word] = search(word)
 
+    print("Calculating search results for phrase \"%s\"" % phrase)
+
     search_list = []
     for word, result in search_results.items():
         for abstract in result:
@@ -83,6 +84,8 @@ def search_phrase(phrase):
 
         if len(found_at) > 0:
             results.append((content_id, found_at))
+
+    print("Finished calculating search results")
 
     return results
 

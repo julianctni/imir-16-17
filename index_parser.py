@@ -22,7 +22,7 @@ def print_progress(current, total):
 	"""
 	if (current % 10000 == 0 or current == total - 1):
 		percent = min(current / total * 100, 100)
-		print("Progress: %.2f%%" % percent)
+		print("Progress: %.2f%%" % percent, end="\r")
 
 
 def parse_line(text):
@@ -83,7 +83,7 @@ def create_index(abstract, content_id, character_group, group_index):
 			symbol_dict[word].append(word_index)
 
 
-def parse_file(group_index):
+def parse_file(group_index, group_count, character_group):
 	"""
 	Opens the abstracts file and reads it line after line. Calls the parse_line() to 
 	receive abstract id and preprocessed abstract text. After that it calls create_index()
@@ -98,7 +98,7 @@ def parse_file(group_index):
 	file_input = open('long_abstracts_de.ttl', 'r', encoding='utf-8', errors='ignore')
 	lines = file_input.readlines()
 	count = len(lines)
-	print("Parsing file for index %i..." % group_index)
+	print("Parsing file for index %i (%s) of %i..." % (group_index, ', '.join(character_group), group_count-1))
 
 	group = characters_group(group_index)
 
@@ -114,7 +114,7 @@ def parse_file(group_index):
 		create_index(abstract, content_id, group, group_index)
 		result.append(content_id)
 
-	print("Finished parsing file")
+	print("Finished parsing file for character group %s" %', '.join(character_group))
 	file_input.close()
 	return result
 
@@ -236,7 +236,7 @@ def main():
 	group_count = character_group_count()
 
 	for group_index in range(0, group_count):
-		abstract_ids = parse_file(group_index)
+		abstract_ids = parse_file(group_index, group_count, characters_group(group_index))
 
 		if group_index == 0:
 			write_symbol_index()

@@ -3,219 +3,214 @@ from timeit import default_timer as timer
 from utilities import group_words_with_positions, open_file, characters, character_group_count, characters_group
 from collections import defaultdict
 
-
 word_dict = defaultdict(list)
 symbol_dict = defaultdict(list)
-deleteChars = [')','(','[',']','"', '“', '„', '\\','=', '...', '↑']
-replaceChars = ['.',',', ':', ';', '!', '?', '-', '–', '/']
-
+deleteChars = [')', '(', '[', ']', '"', '“', '„', '\\', '=', '...', '↑']
+replaceChars = ['.', ',', ':', ';', '!', '?', '-', '–', '/']
 
 
 def print_progress(current, total):
-	"""
-	Prints the progress of the current process (parsing/writing to file).
+    """
+    Prints the progress of the current process (parsing/writing to file).
 
-	Args:
-		current: current progress value
+    Args:
+        current: current progress value
 
-		total: target/total progress value
-	"""
-	if (current % 10000 == 0 or current == total - 1):
-		percent = min(current / total * 100, 100)
-		print("Progress: %.2f%%" % percent, end="\r")
+        total: target/total progress value
+    """
+    if (current % 10000 == 0 or current == total - 1):
+        percent = min(current / total * 100, 100)
+        print("Progress: %.2f%%" % percent, end="\r")
 
 
 def parse_line(text):
-	"""
-	Parses one line of the input file and extracts the id of the abstract and
-	removes or replaces some predefined (see arrays deleteChars andreplaceChars)
-	chars from the abstract text, which are not needed for indexing.
+    """
+    Parses one line of the input file and extracts the id of the abstract and
+    removes or replaces some predefined (see arrays deleteChars and replaceChars)
+    chars from the abstract text, which are not needed for indexing.
 
-	Args:
-		text: the text of one line 
+    Args:
+        text: the text of one line
 
-	Returns:
-		returns the id of the current abstract and the abstract text without any punctuation marks or brackets.
-	"""
-	result = re.search('resource\/(.*)>\s<[a-zA-Z:\/\.]*>\s"(.*)"@de', text)
-	if result:
-		content_id = result.group(1)
-		abstract = result.group(2)
-		for char in deleteChars:
-			abstract = abstract.replace(char, "")
-		for char in replaceChars:
-			abstract = abstract.replace(char, " ")
-		return content_id, abstract
+    Returns:
+        returns the id of the current abstract and the abstract text without any punctuation marks or brackets.
+    """
+    result = re.search('resource\/(.*)>\s<[a-zA-Z:\/\.]*>\s"(.*)"@de', text)
+    if result:
+        content_id = result.group(1)
+        abstract = result.group(2)
+        for char in deleteChars:
+            abstract = abstract.replace(char, "")
+        for char in replaceChars:
+            abstract = abstract.replace(char, " ")
+        return content_id, abstract
 
 
 def create_index(abstract, content_id, character_group, group_index):
-	"""
-	Creates all index data for an abstract.
-		1. split text into single terms.
-		2. make tuples of terms and an array containing their positions in the text, e.g. ('car', [0,4,6])
-		3. check the first char of each term, whether it belongs to the current character_group or is a special char/number
-			case 1: char belongs to current character group
-			case 2: char does not belong to current character_group, but is a special char/number
-			case 3: char does not belong to current character_group and is not a special char/number
-		4. if case 1 or 3 -> add tuple to the corresponding dictionariy (word_dict or symbol_dict)
+    """
+    Creates all index data for an abstract.
+        1. split text into single terms.
+        2. make tuples of terms and an array containing their positions in the text, e.g. ('car', [0,4,6])
+        3. check the first char of each term, whether it belongs to the current character_group or is a special char/number
+            case 1: char belongs to current character group
+            case 2: char does not belong to current character_group, but is a special char/number
+            case 3: char does not belong to current character_group and is not a special char/number
+        4. if case 1 or 3 -> add tuple to the corresponding dictionary (word_dict or symbol_dict)
 
-	Args:
-		abstract: preprocessed abstract text (see function parse_line)
+    Args:
+        abstract: preprocessed abstract text (see function parse_line)
 
-		content_id: id of the abstract containing the term
+        content_id: id of the abstract containing the term
 
-		character_group: character group of the first char of the term (aäbcd, efghi, jklmn, oöpq, stuüv, wxyz, special chars/numbers)
+        character_group: character group of the first char of the term (aäbcd, efghi, jklmn, oöpq, stuüv, wxyz, special chars/numbers)
 
-		group_index: index of the current character group
-	"""
-	words = abstract.split()
-	word_groups = group_words_with_positions(words)
-	for group in word_groups:
-		word = group[0]
-		positions = group[1]
-		word_index = (content_id, positions)
+        group_index: index of the current character group
+    """
+    words = abstract.split()
+    word_groups = group_words_with_positions(words)
+    for group in word_groups:
+        word = group[0]
+        positions = group[1]
+        word_index = (content_id, positions)
 
-		initial_char = word[0]
-		if initial_char in character_group:
-			word_dict[word].append(word_index)
-
-		elif group_index == 0 and initial_char not in characters:
-			symbol_dict[word].append(word_index)
+        initial_char = word[0]
+        if initial_char in character_group:
+            word_dict[word].append(word_index)
+        elif group_index == 0 and initial_char not in characters:
+            symbol_dict[word].append(word_index)
 
 
 def parse_file(group_index, group_count, character_group):
-	"""
-	Opens the abstracts file and reads it line after line. Calls the parse_line() to 
-	receive abstract id and preprocessed abstract text. After that it calls create_index()
-	to add the index data to the dict variables for each line/abstract and character group.
+    """
+    Opens the abstracts file and reads it line after line. Calls the parse_line() to
+    receive abstract id and preprocessed abstract text. After that it calls create_index()
+    to add the index data to the dict variables for each line/abstract and character group.
 
-	Args:
-		group_index: index of the current character group
+    Args:
+        group_index: index of the current character group
 
-	Returns:
-		returns an array containing all abstract ids (only needed during first indexing iteration)
-	"""
-	file_input = open('long_abstracts_de.ttl', 'r', encoding='utf-8', errors='ignore')
-	lines = file_input.readlines()
-	count = len(lines)
-	print("Parsing file for index %i (%s) of %i..." % (group_index, ', '.join(character_group), group_count-1))
+    Returns:
+        returns an array containing all abstract ids (only needed during first indexing iteration)
+    """
+    file_input = open('long_abstracts_de.ttl', 'r', encoding='utf-8', errors='ignore')
+    lines = file_input.readlines()
+    count = len(lines)
+    print("Parsing file for index %i (%s) of %i..." % (group_index, ', '.join(character_group), group_count - 1))
 
-	group = characters_group(group_index)
+    group = characters_group(group_index)
 
-	result = []
-	for i in range(0, count):
-		print_progress(i, count)
+    result = []
+    for i in range(0, count):
+        print_progress(i, count)
 
-		line = lines[i].lower()
-		if (line[0] == "#"):
-			continue
+        line = lines[i].lower()
+        if (line[0] == "#"):
+            continue
 
-		content_id, abstract = parse_line(line)
-		create_index(abstract, content_id, group, group_index)
-		result.append(content_id)
+        content_id, abstract = parse_line(line)
+        create_index(abstract, content_id, group, group_index)
+        result.append(content_id)
 
-	print("Finished parsing file for character group %s" %', '.join(character_group))
-	file_input.close()
-	return result
+    print("Finished parsing file for character group %s" % ', '.join(character_group))
+    file_input.close()
+    return result
 
 
 def write_word_index(group_index):
-	"""
-	Writes the content of the word dictionary (word_dict) to the index file of the character group.
-	The formatting of the index file looks like this:
+    """
+    Writes the content of the word dictionary (word_dict) to the index file of the character group.
+    The formatting of the index file looks like this:
 
-	term: (abstract id, [positions])
+    term: (abstract id, [positions])
 
-	Args:
-		group_index: index of the current character group
-	"""
-	file_output = open_file("index/index" + str(group_index) + ".txt", "w")
+    Args:
+        group_index: index of the current character group
+    """
+    file_output = open_file("index/index" + str(group_index) + ".txt", "w")
 
-	delimiter = ": "
-	count = len(word_dict)
-	i = 0
-	print("Writing word index %i to file..." % group_index)
+    delimiter = ": "
+    count = len(word_dict)
+    i = 0
+    print("Writing word index %i to file..." % group_index)
 
-	# Sort dictionary by the count of abstract ids in a descending order.
-	# This is gonna take some time...
-	for word in sorted(word_dict, key=lambda word: len(word_dict[word]), reverse=True):
-		print_progress(i, count)
+    # Sort dictionary by the count of abstract ids in a descending order.
+    # This is gonna take some time...
+    for word in sorted(word_dict, key=lambda word: len(word_dict[word]), reverse=True):
+        print_progress(i, count)
 
-		ids = word_dict[word]
-		file_output.write(word + delimiter + ", ".join(map(str, ids)) + "\n")
+        ids = word_dict[word]
+        file_output.write(word + delimiter + ", ".join(map(str, ids)) + "\n")
 
-		i += 1
+        i += 1
 
-	print("Finished writing word index to file")
+    print("Finished writing word index to file")
 
-	word_dict.clear()
-	file_output.close()
+    word_dict.clear()
+    file_output.close()
 
 
 def write_symbol_index():
-	"""
-	Writes the content of the dictionary containing terms which start with a
-	special chars or a number numbers (symbol_dict) to the corresponding index file.
-	This function is only called once, because all all numbers/special chars are
-	found in the first iteration of indexing.
+    """
+    Writes the content of the dictionary containing terms which start with a
+    special char or a number (symbol_dict) to the corresponding index file.
+    This function is only called once, because all all numbers/special chars are
+    found in the first iteration of indexing.
 
-	The formatting of the index file looks like this:
-	
-	term: (abstract id, [positions])
-	"""
-	file_output = open_file("index/other.txt", "w")
+    The formatting of the index file looks like this:
 
-	delimiter = ": "
-	count = len(symbol_dict)
-	i = 0
-	print("Writing symbol index to file...")
+    term: (abstract id, [positions])
+    """
+    file_output = open_file("index/other.txt", "w")
 
-	for symbol in symbol_dict:
-		print_progress(i, count)
+    delimiter = ": "
+    count = len(symbol_dict)
+    i = 0
+    print("Writing symbol index to file...")
 
-		ids = symbol_dict[symbol]
-		file_output.write(symbol + delimiter + ", ".join(map(str, ids)) + "\n")
+    for symbol in symbol_dict:
+        print_progress(i, count)
 
-		i += 1
+        ids = symbol_dict[symbol]
+        file_output.write(symbol + delimiter + ", ".join(map(str, ids)) + "\n")
 
-	print("Finished writing symbol index to file")
+        i += 1
 
-	symbol_dict.clear()
-	file_output.close()
+    print("Finished writing symbol index to file")
 
+    symbol_dict.clear()
+    file_output.close()
 
 
 def write_abstract_ids(abstract_ids):
-	"""
-	Writes all abstract ids to an extra file. This file is important for boolean NOT search.
+    """
+    Writes all abstract ids to an extra file. This file is important for boolean NOT search.
 
-	The formatting of the index file looks like this:
-	
-	abstract id 1
-	abstract id 2
-	abstract id 3
-	...
+    The formatting of the index file looks like this:
 
-	The function is only called once after the first iteration of indexing.
+    abstract id 1
+    abstract id 2
+    abstract id 3
+    ...
 
-	Args:
-		abstract_ids: an array containing all abstract ids
-	"""
-	file_output = open_file("index/abstractids.txt", "w")
-	count = len(abstract_ids)
+    The function is only called once after the first iteration of indexing.
 
-	print("Writing abstract ids to file...")
+    Args:
+        abstract_ids: an array containing all abstract ids
+    """
+    file_output = open_file("index/abstractids.txt", "w")
+    count = len(abstract_ids)
 
-	for index, abstract_id in enumerate(abstract_ids):
-		print_progress(index, count)
+    print("Writing abstract ids to file...")
 
-		delimiter = "\n" if index < count else ""
-		file_output.write(abstract_id + delimiter)
+    for index, abstract_id in enumerate(abstract_ids):
+        print_progress(index, count)
 
-	print("Finished abstract ids to file")
+        delimiter = "\n" if index < count else ""
+        file_output.write(abstract_id + delimiter)
 
-	file_output.close()
+    print("Finished abstract ids to file")
 
+    file_output.close()
 
 
 def main():

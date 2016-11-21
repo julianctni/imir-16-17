@@ -1,10 +1,20 @@
 from itertools import groupby
 from collections import defaultdict
 
+"""
+This file contains several helper functions, which are used in the indexing and search process.
+
+"""
 
 characters = ["a", "ä", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "ö", "p", "q", "r", "s", "t", "u", "ü", "v", "w", "x", "y", "z"]
 characters_group_size = 5
 
+
+"""
+The following four functions are used to seperate groups of characters in different index files. 
+The current approach handles five successive characters per index file.
+
+"""
 
 def characters_group(group_index):
     start_index = characters_group_size * group_index
@@ -30,6 +40,12 @@ def group_for_character(char):
 
 
 def file_name_for_char(char):
+    """
+    Returns the corresponding filename for each character
+
+    Args:
+        char: character which should be assigned to filename
+    """
     group_index = group_for_character(char)
 
     if group_index is not None:
@@ -68,6 +84,13 @@ def group_words_with_positions(seq):
 
 
 def common_elements(dict1, dict2):
+    """
+    Returns all elements which are common in both input lists.
+    This function is used to calculate the AND Operator
+    
+    Args:
+        dict1, dict2: input lists
+    """
     dict1_set = set(dict1)
     dict2_set = set(dict2)
 
@@ -83,6 +106,13 @@ def common_elements(dict1, dict2):
 
 
 def unique_elements(dict1, dict2):
+    """
+    Returns all elements which are unique in both input lists.
+    This function is used to calculate the OR Operator
+    
+    Args:
+        dict1, dict2: input lists
+    """
     keys1 = list(dict1.keys())
     keys2 = list(dict2.keys())
 
@@ -99,6 +129,13 @@ def unique_elements(dict1, dict2):
 
 
 def indices(lst, element):
+    """
+    Args:
+        lst: list, which should be handled
+        element: the element which indices wish to be known
+
+    Returns: list of all indices of the element in a list
+    """
     result = []
     offset = -1
     while True:
@@ -110,6 +147,9 @@ def indices(lst, element):
 
 
 def is_int(value):
+    """
+    Returns True if value is int, otherwise False
+    """
     try:
         int(value)
         return True

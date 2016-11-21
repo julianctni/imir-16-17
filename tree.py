@@ -79,8 +79,9 @@ class NotOperatorNode(OperatorNode):
 
     def evaluate(self, left, _):
         """
-        Adds the result of the left child to itself. These results must be excluded from
-        the final result.
+        NotOperatorNode instances store all existing abstract ids in their ids property.
+        The set of abstract ids is subtracted from the result set of the left child node.
+        This yields all abstract ids that do not contain the term of the child node.
 
         Args:
             left: the left child of the current node.
@@ -89,10 +90,11 @@ class NotOperatorNode(OperatorNode):
         if left is not None:
             id_list = set(left.result.keys())
 
-            not_set = self.ids - id_list
-            not_set = dict.fromkeys(not_set, [])
+            other_ids = self.ids - id_list
+            # Set all values in the dictionary to an empty array
+            other_ids = dict.fromkeys(other_ids, [])
 
-            self.result = not_set
+            self.result = other_ids
 
 
 class BinaryTree:

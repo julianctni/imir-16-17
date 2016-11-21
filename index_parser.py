@@ -214,36 +214,36 @@ def write_abstract_ids(abstract_ids):
 
 
 def main():
-	"""
-	Main function which starts the indexing process.
-	First it calculates the size of the number of character groups (see utilites.py).
-	The default value (characters_group_size in utilities.py) is set to 5, which works with a RAM size of 8GB.
-	On systems with a smaller RAM size, it should be set to a lower value (see utilites.py).
+    """
+    Main function which starts the indexing process.
+    First it calculates the size of the number of character groups (see utilities.py).
+    The default value (characters_group_size in utilities.py) is set to 5, which works with a RAM size of 8GB.
+    On systems with a smaller RAM size, it should be set to a lower value (see utilities.py).
 
-	After that it starts the indexing for each character group. With the default value of 5 there are
-	six iterations and the following character groups: aäbcd, efghi, jklmn, oöpq, stuüv, wxyz, special chars / numbers.
-	During the first iteration (default: aäbcd) it furthermore writes the index for special chars / numbers and the 
-	file containing all abstract ids.
-	"""
-	start = timer()
+    After that it starts the indexing for each character group. With the default value of 5 there are
+    six iterations and the following character groups: aäbcd, efghi, jklmn, oöpq, stuüv, wxyz, special chars / numbers.
+    During the first iteration (default: aäbcd) it furthermore writes the index for special chars / numbers and the
+    file containing all abstract ids.
+    """
+    start = timer()
 
-	abstract_ids = []
-	group_count = character_group_count()
+    abstract_ids = []
+    group_count = character_group_count()
 
-	for group_index in range(0, group_count):
-		abstract_ids = parse_file(group_index, group_count, characters_group(group_index))
+    for group_index in range(0, group_count):
+        abstract_ids = parse_file(group_index, group_count, characters_group(group_index))
 
-		if group_index == 0:
-			write_symbol_index()
-			write_abstract_ids(abstract_ids)
+        if group_index == 0:
+            write_symbol_index()
+            write_abstract_ids(abstract_ids)
 
-		write_word_index(group_index)
-		print("------------------------------------------------------------")
+        write_word_index(group_index)
+        print("------------------------------------------------------------")
 
-	end = timer()
-	elapsed_time = end - start
-	abstract_count = len(abstract_ids)
-	print("Time to index %i abstracts: %.2f s" % (abstract_count, elapsed_time))
+    end = timer()
+    elapsed_time = end - start
+    abstract_count = len(abstract_ids)
+    print("Time to index %i abstracts: %.2f s" % (abstract_count, elapsed_time))
 
 
 if __name__ == "__main__": main()

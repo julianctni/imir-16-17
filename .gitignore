@@ -91,3 +91,5 @@ ENV/
 *.ttl
 task1/index/
 *.pyc
+
+task2/PlantCLEF2016Test

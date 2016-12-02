@@ -1,0 +1,43 @@
+Displaygröße:
+	- 24-42 Zoll Touchscreens, Single-User Anwendung, Schräg/vertikal angebracht
+
+Art der Medien:
+	- Bildersuche
+	- größere moderierte/annotierte Datenbank/Archiv von Bildern (Anzahl nicht eingeschränkt, ~5 Mrd.)
+
+Setting:
+	- Person sucht Fotos oder Bilder und nutzt dafür einen größeren Touchdisplay
+	- Nutzung in Bibliothek oder eher öffentlichen Räumen (vllt auch daheim)
+	- Suchen von Bildern zu einem entsprechenden Thema
+
+Kontext:
+	zeitlich:
+		- keine gezielte/schnelle Suche, sondern eher inspirieren lassen (~15 Minuten)
+		- kreativer Prozess
+	persönlicher:
+		- Bildsuche kreativ oder Inspiration
+
+Retrieval-Funktion:
+	- Tag- und Merkmalbasiert
+	- Eventuelle Merkmalerkennung durch Machine Learning etc.
+
+Visualisierung:
+	- Bilderwolke in alle Richtungen, eventl. Größe der Bilder zur Relevanzdartstellung
+	- (Thematische Änderungen über die Ebene)
+
+	- Sortieren der Ergebnismenge:
+		- z.B. nach Farben
+		- Zeit, dann nach nur nach Links und Rechts möglich
+		- etc. 
+
+	- Minimap zur besseren Übersicht
+	- Filter in gesondertem Bereich
+		- Filter:
+			- Emojis
+			- Farben
+			- Ort
+			- Aufnahmedatum, zeitlicher Kontext
+			- NSFW
+			- (Auflösung?)
+
+	- Rechte oder Linke Seite Ablagefläche für Filter und Bilder

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Image>
+  <ObservationId>43511</ObservationId>
+  <MediaId>113227</MediaId>
+  <Content>Flower</Content>
+  <Author>iolanda adinolfi</Author>
+  <Date>2014-7-29</Date>
+  <Location>Trani</Location>
+  <Latitude>41.27676</Latitude>
+  <Longitude>16.41944</Longitude>
+  <YearInCLEF>PlantCLEF2016</YearInCLEF>
+  <ObservationId2014 />
+  <ImageId2014 />
+  <LearnTag>Test</LearnTag>
+</Image>

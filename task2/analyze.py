@@ -1,6 +1,8 @@
 import sys
+import math
 from timeit import default_timer as timer
 from PIL import Image
+
 
 #	analyze.py
 #
@@ -17,7 +19,7 @@ def loadImage( path ):
 		print("cannot open", path)
 		quit()
 
-	print(path, "(", image.width, "x", image.height, ") loaded")
+	#print(path, "(", image.width, "x", image.height, ") loaded")
 	return image
 
 
@@ -68,28 +70,75 @@ def convertToYCbCr( image ):
 	return image
 
 
-def main():
-	#
-	#	main function
-	#
+def dctTransformation(image):
+
+	def alpha( p , N):
+			if p == 0:
+				return math.sqrt(1/N)
+			else:
+				return math.sqrt(2/N)	
+
+	def ac ( image, channel, u, v, N):
+		sumresult = 0
+		pixels = image.load()
+		for x in range(N):
+			for y in range(N):
+				sumresult += pixels[x,y][channel] * math.cos((math.pi*(2*x+1)*u)/(2*N)) * math.cos((math.pi*(2*y+1)*v)/(2*N))
+				#print(u,v,x,y)
+		return alpha(u, N) * alpha(v, N) * sumresult
+
+	'''
+	N = 8
+	yCoeffs = [[0 for x in range(N)] for y in range(N)] 
+	cbCoeffs = [[0 for x in range(N)] for y in range(N)] 
+	crCoeffs = [[0 for x in range(N)] for y in range(N)] 
+
+	for u in range(N):
+		for v in range(N):
+			yCoeffs[u][v] = ac(image, 0, u, v, N)
+			cbCoeffs[u][v] = ac(image, 1, u, v, N)
+			crCoeffs[u][v] = ac(image, 2, u, v, N)
+
+	#print(yCoeffs)
+	#print(cbCoeffs)
+	#print(crCoeffs)
+	'''
+
+	N = 8
+
+	yDC = 0
+	cbDC = 0
+	crDC = 0
+	yCoeffs = []
+	cbCoeffs = []
+	crCoeffs = []
+
+	yDC = round(ac(image, 0, 0, 0, N),2)
+	yCoeffs.append(round(ac(image, 0, 0, 1, N),2)) #2
+	yCoeffs.append(round(ac(image, 0, 1, 0, N),2)) #9
+	yCoeffs.append(round(ac(image, 0, 2, 0, N),2)) #17
+	yCoeffs.append(round(ac(image, 0, 1, 1, N),2)) #10
+	yCoeffs.append(round(ac(image, 0, 0, 2, N),2)) #3
+
+	cbDC = round(ac(image, 1, 0, 0, N),2)
+	cbCoeffs.append(round(ac(image, 1, 0, 1, N),2)) #2
+	cbCoeffs.append(round(ac(image, 1, 1, 0, N),2)) #9
+
+	crDC = round(ac(image, 2, 0, 0, N),2)
+	crCoeffs.append(round(ac(image, 2, 0, 1, N),2)) #2
+	crCoeffs.append(round(ac(image, 2, 1, 0, N),2)) #9
+
+	return yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs
+
+
+def createDescriptor( filename ):
+	'''
 	start = timer()
-
-	print("Loading image..")
-	image = loadImage(sys.argv[-1])
-	image.resize((256,256),Image.NEAREST).show(); #deeeebug!!
-
-	print("Representative color selection...")
-	image = shrinkImage(image)	
-	image.resize((256,256),Image.NEAREST).show(); #deeeebug!!
-
-	print("Convert image to YCbCr..")
-	image = convertToYCbCr(image)
-	image.resize((256,256),Image.NEAREST).show(); #deeeebug!!
-
+	yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs = dctTransformation(convertToYCbCr(shrinkImage(loadImage(filename))))
 	end = timer()
 	elapsed_time = end - start
+	print("%.2fs :" % elapsed_time, filename)
+	return yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs
+	'''
 
-	print("Done in %.2fs" % elapsed_time)
-
-
-if __name__ == "__main__": main()
+	return dctTransformation(convertToYCbCr(shrinkImage(loadImage(filename))))

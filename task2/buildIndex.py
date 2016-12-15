@@ -9,18 +9,22 @@ import xml.dom.minidom
 entireGroup, branchGroup, flowerGroup, fruitGroup, leafGroup, leafScanGroup, stemGroup, miscGroup = [], [], [], [], [], [], [], []
 
 def getContentType (filename):
+	#	get the content type of an file.xml
+	#	e.g. Leaf or Flower
+	#
 	DOMTree = xml.dom.minidom.parse(filename)
 	image = DOMTree.documentElement
-
 	try:
 		content = image.getElementsByTagName("Content")[0].childNodes[0].data
-	except:
+	except: # if no group specified or typo
 		content = "NoContentType"
-
 	return content
 
 
 def getGroup( str ):
+	#
+	#	returns the corresponding group, in which the element belongs
+	#
 	if str == "Entire":
 		return entireGroup
 	elif str == "Branch":
@@ -35,16 +39,16 @@ def getGroup( str ):
 		return leafScanGroup
 	elif str == "Stem":
 		return stemGroup
-	else:
-		#print(str)
+	else: # if no group specified or typo
 		return miscGroup
 
 
-
 def writeIndex(filename):
-
+	#
+	#	Write the index to file
+	#	csv -> Content, yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs, MediaId
+	#
 	fileoutput = open(filename, "w+", encoding='utf-8', errors='ignore')
-
 	for item in entireGroup:
 		fileoutput.write("Entire," + item + "\n") 
 	for item in branchGroup:
@@ -64,38 +68,49 @@ def writeIndex(filename):
 
 
 def main():
-	print("Welcome :)")
-
+	#
+	#	main
+	#
+	print("Color Layout Description Index Builder")
+	print("--------------------------------------")
 	start = timer()
 	directory = "PlantCLEF2016Test"
 	indexFilename = "index.csv"
 	listdir = os.listdir(directory)
 	filecount = 0
 	progress = 0
+	s = " "; # seperator for the coefficients
 
+	# counting all files in the directory, excluding hidden dot-files
 	for filename in listdir:
 		if filename.endswith(".jpg") and filename[0] != '.':
 			filecount += 1
 
+	# going through all jpg files and calculating the descriptor
+	# get the contentype via the xml file
 	for filename in listdir:		
 		if filename.endswith(".jpg") and filename[0] != '.':
 			path = os.path.join(directory, filename)			
-			yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs = createDescriptor(path)
-			contentType = getContentType(path.replace("jpg", "xml"))
 
-			s = " "; # seperatror
+			# calculate descriptor
+			yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs = createDescriptor(path)
+
+			# get the content type
+			contentType = getContentType(path.replace("jpg", "xml"))
+			
+			# write entry in corresponding content-group list
 			getGroup(contentType).append(str(yDC) +','+ s.join(str(x) for x in yCoeffs) +','+ str(cbDC) +','+ s.join(str(x) for x in cbCoeffs) +','+ str(crDC) +','+ s.join(str(x) for x in crCoeffs) +','+ filename.replace(".jpg", ""))
 
-			progress += 1
-			#if progress % 10 == 0:
-				#print(len(entireGroup), len(branchGroup), len(flowerGroup), len(fruitGroup), len(leafGroup), len(leafScanGroup), len(stemGroup), len(miscGroup))
+			progress += 1			
 			print ("Building index..%.2f%%" % (progress/filecount*100), end="\r")
-
-			if progress == 20: 
+			
+			if progress == 100: # DEBUG for not building the whole index
 				break
 				
-	print("B")
+	print("B") # some litte workaround to start a new line
 	print("Write index to file..")
+
+	# write all entrys to file
 	writeIndex(indexFilename)
 
 	end = timer()
@@ -104,9 +119,4 @@ def main():
 	print("Done in %.2fs" % elapsed_time)
 
 
-if __name__ == "__main__": main()
-
-
-
-
-#Content, yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs, MediaId 
+if __name__ == "__main__": main() 

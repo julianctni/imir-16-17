@@ -5,8 +5,7 @@ from PIL import Image
 
 
 #	analyze.py
-#
-#	usage: python3 analyze.py example.jpg
+#	functions for calculating the color layout descriptor
 
 
 def loadImage( path ):
@@ -19,13 +18,13 @@ def loadImage( path ):
 		print("cannot open", path)
 		quit()
 
-	#print(path, "(", image.width, "x", image.height, ") loaded")
 	return image
 
 
 def shrinkImage( image ):
 	#
 	#	divides the image in 8x8 blocks and scales down
+	#	using the average color of these blocks
 	#
 	smallImage = Image.new(image.mode, (8,8))
 	pixelsNew = smallImage.load()
@@ -34,6 +33,7 @@ def shrinkImage( image ):
 	x = int(image.width/8)
 	y = int(image.height/8)
 
+	# going through all blocks
 	for i in range(8):
 		for j in range (8):
 			pixelBlockRed = []
@@ -45,11 +45,10 @@ def shrinkImage( image ):
 					pixelBlockRed.append(r)
 					pixelBlockGreen.append(g)
 					pixelBlockBlue.append(b)
+			# average the colors and save to new image
 			pixelsNew[i,j] = (int(sum(pixelBlockRed)/len(pixelBlockRed)),int(sum(pixelBlockGreen)/len(pixelBlockGreen)),int(sum(pixelBlockBlue)/len(pixelBlockBlue)))
 
-	#image.resize((8,8),Image.ANTIALIAS).resize((64,64),Image.NEAREST).show()
-
-	return smallImage # image.resize((8,8),Image.ANTIALIAS) # resize same result as average downsampling??
+	return smallImage 
 
 
 def convertToYCbCr( image ):
@@ -62,50 +61,38 @@ def convertToYCbCr( image ):
 	for i in range(image.size[0]):
 		for j in range (image.size[1]):
 			r,g,b = pixels[i,j]			
+			# using the YCbCr transformation matrix
 			y = int(round(0 +0.299*r + 0.587*g + 0.114*b))
 			cb = int(round(128 -0.168736*r -0.331364*g + 0.5*b))
 			cr = int(round(128 +0.5*r - 0.418688*g - 0.081312*b))
-			pixels[i,j] = (y, cb, cr)
-	
+			pixels[i,j] = (y, cb, cr)	
 	return image
 
 
 def dctTransformation(image):
+	#
+	# 	does the DCT transformation and quantizes the result
+	# 	returns the descriptor
 
+	# alpha-function
 	def alpha( p , N):
 			if p == 0:
 				return math.sqrt(1/N)
 			else:
 				return math.sqrt(2/N)	
 
+	# function to calcuate one coefficient
 	def ac ( image, channel, u, v, N):
 		sumresult = 0
 		pixels = image.load()
 		for x in range(N):
 			for y in range(N):
 				sumresult += pixels[x,y][channel] * math.cos((math.pi*(2*x+1)*u)/(2*N)) * math.cos((math.pi*(2*y+1)*v)/(2*N))
-				#print(u,v,x,y)
 		return alpha(u, N) * alpha(v, N) * sumresult
 
-	'''
-	N = 8
-	yCoeffs = [[0 for x in range(N)] for y in range(N)] 
-	cbCoeffs = [[0 for x in range(N)] for y in range(N)] 
-	crCoeffs = [[0 for x in range(N)] for y in range(N)] 
-
-	for u in range(N):
-		for v in range(N):
-			yCoeffs[u][v] = ac(image, 0, u, v, N)
-			cbCoeffs[u][v] = ac(image, 1, u, v, N)
-			crCoeffs[u][v] = ac(image, 2, u, v, N)
-
-	#print(yCoeffs)
-	#print(cbCoeffs)
-	#print(crCoeffs)
-	'''
-
-	N = 8
-
+	N = 8 # number of blocks, in our case always 8
+	
+	# resulting coefficients
 	yDC = 0
 	cbDC = 0
 	crDC = 0
@@ -113,7 +100,8 @@ def dctTransformation(image):
 	cbCoeffs = []
 	crCoeffs = []
 
-	#Quantize DC: 6 Bit=64 , AC: 5 Bit=32
+	# using zig-zag to get all needed coefficients
+	# also quantize DC: 6 Bit=64 , AC: 5 Bit=32
 
 	yDC = round(ac(image, 0, 0, 0, N)/64)
 	yCoeffs.append(round(ac(image, 0, 0, 1, N)/32)) #2
@@ -134,13 +122,7 @@ def dctTransformation(image):
 
 
 def createDescriptor( filename ):
-	'''
-	start = timer()
-	yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs = dctTransformation(convertToYCbCr(shrinkImage(loadImage(filename))))
-	end = timer()
-	elapsed_time = end - start
-	print("%.2fs :" % elapsed_time, filename)
-	return yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs
-	'''
-
+	#
+	# calculate the descriptor by following the algorithm
+	#
 	return dctTransformation(convertToYCbCr(shrinkImage(loadImage(filename))))

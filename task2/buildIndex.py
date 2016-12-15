@@ -91,8 +91,8 @@ def main():
 				#print(len(entireGroup), len(branchGroup), len(flowerGroup), len(fruitGroup), len(leafGroup), len(leafScanGroup), len(stemGroup), len(miscGroup))
 			print ("Building index..%.2f%%" % (progress/filecount*100), end="\r")
 
-			#if progress == 80: 
-			#	break
+			if progress == 20: 
+				break
 				
 	print("B")
 	print("Write index to file..")

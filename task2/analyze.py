@@ -113,20 +113,22 @@ def dctTransformation(image):
 	cbCoeffs = []
 	crCoeffs = []
 
-	yDC = round(ac(image, 0, 0, 0, N),2)
-	yCoeffs.append(round(ac(image, 0, 0, 1, N),2)) #2
-	yCoeffs.append(round(ac(image, 0, 1, 0, N),2)) #9
-	yCoeffs.append(round(ac(image, 0, 2, 0, N),2)) #17
-	yCoeffs.append(round(ac(image, 0, 1, 1, N),2)) #10
-	yCoeffs.append(round(ac(image, 0, 0, 2, N),2)) #3
+	#Quantize DC: 6 Bit=64 , AC: 5 Bit=32
 
-	cbDC = round(ac(image, 1, 0, 0, N),2)
-	cbCoeffs.append(round(ac(image, 1, 0, 1, N),2)) #2
-	cbCoeffs.append(round(ac(image, 1, 1, 0, N),2)) #9
+	yDC = round(ac(image, 0, 0, 0, N)/64)
+	yCoeffs.append(round(ac(image, 0, 0, 1, N)/32)) #2
+	yCoeffs.append(round(ac(image, 0, 1, 0, N)/32)) #9
+	yCoeffs.append(round(ac(image, 0, 2, 0, N)/32)) #17
+	yCoeffs.append(round(ac(image, 0, 1, 1, N)/32)) #10
+	yCoeffs.append(round(ac(image, 0, 0, 2, N)/32)) #3
 
-	crDC = round(ac(image, 2, 0, 0, N),2)
-	crCoeffs.append(round(ac(image, 2, 0, 1, N),2)) #2
-	crCoeffs.append(round(ac(image, 2, 1, 0, N),2)) #9
+	cbDC = round(ac(image, 1, 0, 0, N)/64)
+	cbCoeffs.append(round(ac(image, 1, 0, 1, N)/32)) #2
+	cbCoeffs.append(round(ac(image, 1, 1, 0, N)/32)) #9
+
+	crDC = round(ac(image, 2, 0, 0, N)/64)
+	crCoeffs.append(round(ac(image, 2, 0, 1, N)/32)) #2
+	crCoeffs.append(round(ac(image, 2, 1, 0, N)/32)) #9
 
 	return yDC, yCoeffs, cbDC, cbCoeffs, crDC, crCoeffs
 

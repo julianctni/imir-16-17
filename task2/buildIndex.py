@@ -65,6 +65,7 @@ def writeIndex(filename):
 		fileoutput.write("Stem," + item + "\n") 
 	for item in miscGroup:
 		fileoutput.write("null," + item + "\n") 
+	fileoutput.close()
 
 
 def main():

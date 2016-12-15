@@ -105,8 +105,8 @@ def main():
 			progress += 1			
 			print ("Building index..%.2f%%" % (progress/filecount*100), end="\r")
 			
-			if progress == 100: # DEBUG for not building the whole index
-				break
+			#if progress == 100: # DEBUG for not building the whole index
+			#	break
 				
 	print("B") # some litte workaround to start a new line
 	print("Write index to file..")

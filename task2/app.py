@@ -21,8 +21,6 @@ class ImageView:
         self.image = Image.new("RGB", (500, 500), "gray")
         self.photo = ImageTk.PhotoImage(self.image)
         self.canvas.create_image(0, 0, image=self.photo, anchor=NW, tags="IMG")
-        # Align image canvas to all sides
-        self.canvas.grid(row=1, sticky=W + E + N + S)
         self.canvas.pack(side=TOP, fill=BOTH, expand=1)
         # Add listener that is called in case the window is resized
         parent.bind("<Configure>", self.resize)
@@ -83,17 +81,14 @@ class Example(Frame):
         self.pack(fill=BOTH, expand=1)
 
         label = Label(self, text="Select an image file to find its most similar image")
-        label.grid(row=0, column=0)
         label.pack()
 
         file_dialog_button = Button(self, text="Open Image file", command=self.on_open, pady=15)
-        file_dialog_button.grid(row=0, column=1)
         file_dialog_button.pack()
 
         self.image_view = ImageView(self)
 
         image_id_label = Label(self, textvariable=self.image_id, pady=15)
-        image_id_label.grid(row=2, column=0)
         image_id_label.pack()
 
     def on_open(self):

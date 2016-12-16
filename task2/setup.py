@@ -20,9 +20,9 @@ ez_setup.use_setuptools()
 import sys
 from setuptools import setup
 
-APP = ['app.py']
+APP = ['src/app.py']
 APP_NAME = 'SimilarImage'
-DATA_FILES = ['index.csv']
+DATA_FILES = ['assets/index.csv']
 
 if sys.platform == 'darwin':
     extra_options = dict(

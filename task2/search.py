@@ -50,6 +50,7 @@ def search(image_path, index):
     print("Number of images of type %s: %i" % (image_content_type, len(filtered_index)))
     print("Most similar picture with id: %i" % lowest_distance_id)
 
+    return lowest_distance_id
 
 def parse_index():
     index_file = open_file("index.csv")
@@ -82,6 +83,11 @@ def parse_index():
         })
 
     return index
+
+
+def perform_search(image_path):
+    index = parse_index()
+    return search(image_path, index)
 
 
 def main():

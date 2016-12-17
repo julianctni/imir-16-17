@@ -21,8 +21,6 @@ class ImageView:
         self.image = Image.new("RGB", (500, 500), "gray")
         self.photo = ImageTk.PhotoImage(self.image)
         self.canvas.create_image(0, 0, image=self.photo, anchor=NW, tags="IMG")
-        # Align image canvas to all sides
-       
         self.canvas.pack(side=TOP, fill=BOTH, expand=1)
         # Add listener that is called in case the window is resized
         parent.bind("<Configure>", self.resize)
@@ -39,11 +37,7 @@ class ImageView:
         # And add the resized image to the canvas
         self.canvas.create_image(0, 0, image=self.photo, anchor=NW, tags="IMG")
 
-    def show_image(self, image_id):
-        # Construct image path
-        directory = "PlantCLEF2016Test"
-        image_name = ("%i.jpg" % image_id)
-        image_path = os.path.join(directory, image_name)
+    def show_image(self, image_path):
         # Open selected image file
         self.image = Image.open(image_path)
 
@@ -83,17 +77,14 @@ class Example(Frame):
         self.pack(fill=BOTH, expand=1)
 
         label = Label(self, text="Select an image file to find its most similar image")
-        
         label.pack()
 
         file_dialog_button = Button(self, text="Open Image file", command=self.on_open, pady=15)
-       
         file_dialog_button.pack()
 
         self.image_view = ImageView(self)
 
         image_id_label = Label(self, textvariable=self.image_id, pady=15)
-      
         image_id_label.pack()
 
     def on_open(self):
@@ -103,13 +94,18 @@ class Example(Frame):
             'initialdir': './PlantCLEF2016Test/'
         }
 
-        filename = filedialog.askopenfilename(**options)
+        file_path = filedialog.askopenfilename(**options)
 
-        if filename != "":
-            image_id = perform_search(filename)
+        if file_path != "":
+            # Split the file path to get the directory
+            directory = os.path.split(file_path)[0]
 
-            self.image_id.set("Image ID: %s" % image_id)
-            self.image_view.show_image(image_id)
+            image_id = perform_search(file_path)
+            image_name = ("%i.jpg" % image_id)
+            image_path = os.path.join(directory, image_name)
+
+            self.image_id.set("Image ID: %i" % image_id)
+            self.image_view.show_image(image_path)
         else:
             self.image_id.set("")
 

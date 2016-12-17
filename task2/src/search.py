@@ -44,19 +44,13 @@ def search(image_path, index):
 
     # Sort the tuples in the results list by the second item of the tuple (= distance).
     sorted_results = sorted(results, key=lambda x: x[1])
-    # Get the image id from the second lowest distance. The lowest distance is the searched image itself.
-    lowest_distance_id = sorted_results[1][0]
 
     print("Number of images of type %s: %i" % (image_content_type, len(filtered_index)))
-    print("Most similar picture with id: %i" % lowest_distance_id)
 
-    #print(sorted_results)
-    saveResult()
-
-    return lowest_distance_id
+    return sorted_results
 
 def parse_index():
-    index_file = open_file("index.csv")
+    index_file = open_file("../assets/index.csv")
     index_lines = index_file.read().splitlines()
     index_count = len(index_lines)
 
@@ -94,13 +88,19 @@ def perform_search(image_path):
 
 
 def main():
-    directory = "PlantCLEF2016Test"
+    directory = "../PlantCLEF2016Test"
     index = parse_index()
 
     while True:
         image_name = input("Enter image name: ").lower()
         image_path = os.path.join(directory, image_name)
-        search(image_path, index)
+
+        # Get the image id from the second lowest distance. The lowest distance is the searched image itself.
+        lowest_distance_id = search(image_path, index)[1][0]
+
+      
+        print("Most similar picture with id: %i" % lowest_distance_id)
+
 
 
 if __name__ == "__main__":

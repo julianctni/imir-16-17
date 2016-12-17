@@ -1,7 +1,7 @@
 import os
 import math
 from collections import defaultdict
-from utilities import open_file
+from utilities import open_file, saveResult
 from analyze import createDescriptor
 from buildIndex import getContentType
 
@@ -49,6 +49,9 @@ def search(image_path, index):
 
     print("Number of images of type %s: %i" % (image_content_type, len(filtered_index)))
     print("Most similar picture with id: %i" % lowest_distance_id)
+
+    #print(sorted_results)
+    saveResult()
 
     return lowest_distance_id
 

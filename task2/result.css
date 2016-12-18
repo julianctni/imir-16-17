@@ -1,0 +1,22 @@
+body {
+	background-color: #333;
+	color: #fff;
+	font-family: sans-serif;
+
+}
+
+.input-image-item{
+	border: 5px solid white;
+	width: 450px;
+}
+
+.image-item{
+	border: 5px solid black;
+	width: 400px;
+	margin: 30px;
+}
+
+
+img {
+	width: 100%;
+}

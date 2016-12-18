@@ -1,5 +1,6 @@
 import os
 import math
+import webbrowser
 from collections import defaultdict
 from utilities import open_file, saveResult
 from analyze import createDescriptor
@@ -97,10 +98,12 @@ def main():
 
         # Get the image id from the second lowest distance. The lowest distance is the searched image itself.
         lowest_distance_id = search(image_path, index)[1][0]
-
       
         print("Most similar picture with id: %i" % lowest_distance_id)
 
+        saveResult(search(image_path, index))
+
+        webbrowser.open("../result.html")
 
 
 if __name__ == "__main__":

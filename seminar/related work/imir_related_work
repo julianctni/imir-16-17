@@ -24,3 +24,72 @@ http://www.sciencedirect.com/science/article/pii/S0031320306002184
 
 Image browsing, processing, and clustering for participatory sensing: lessons from a DietSense prototype:
 http://dl.acm.org/citation.cfm?id=1278975
+
+A survey of content-based image retrieval with high-level semantics:
+	Grundlegend:
+		- 2 Herangehensweisen:
+			- text-based:
+				- erstes Mal aufgetaucht in den 70ern
+				- Bilder müssen von Menschen beschrieben werden
+				- Subjektivität von Menschen problematisch
+				- Hoher Aufwand
+			- content-based:
+				- 1980er
+				- Indexierung anhand von Farbe, Texturen, Formen
+			- größter Unterschied:
+		- 3 Level von Suchanfragen:
+			- Level 1: 
+				- Primitive Eigenschaften:
+					- Farbe, Textur, Formen
+					- "finde ein Bild das ist wie dieses"
+			- Level 2:
+				- Objekte eines bestimmten Typs
+				- "finde ein Bild einer Blume"
+			- Level 3:
+				- abstrakte Attribute
+					- hoher semantischer Anteil
+					- "finde ein Bild von einem freudigem Publikum"
+		- Problem: Brücke schlagen zwischen einfachen Bildeigenschaften und komplizierten Semantiken
+	Paper beschäftigt sich klarstellung wie man Bilder klassifizieren kann:
+		- Aufteilung in Bereiche
+		- Bildeigenschaften:
+			- Farbe, Durchschnittsfarbe, domianten Farbe
+			- Textur, nicht so oft benutzt wir Farbe, Grobheit, Richtung, Kontrast,...
+			- Form, seltener benutzt als Farbe und Textur
+			- Ähnlichkeit, wird durch verschiedene Formeln berechnet
+		- Semantische Lücke reduzieren
+			- Objekt Ontologie erstellen, zB aus Himmel wird hellblau, uniform und oben
+			- maschinelles Lernen,  beaufsichtigtes Lernen, unbeaufsichtigtes Lernen,...
+
+Blobworld: A System for Region-Based Image Indexing and Retrieval:
+	- Performance erhöhen durch finden von Aussagekräftigen Regionen
+	- Nicht das ganze Bild wird betrachtet
+	- Jeder Pixek bekommt Farbe, Textur und Position zugeordnet
+	- ähnliche Pixel werden zu Blobs/Gruppen zusammengefasst
+	- Suche:
+		- Suche anhand eines Bilder, welches in Blobs unterteilt wird
+		- Nutzer gibt an welche Blobs relevant sind und vergibt eine Gewichtung innerhakb dieser
+		- 
+
+Image Retrieval: Current Techniques, Promising Directions, and Open Issues:
+	- Bestehende Image Retrieval Systeme benutzen:
+		- random browsing - Teilweise beinhaltet in unserem Projekt
+		- search by example - Beinhaltet in unserem Projekt
+		- search by sketch
+		- search by text (including key word or speech) - abstrahiert in unserem Projekt
+		- navigation with customized image categories - Beinhaltet in unserem Projekt
+	- Viele Beipsielsysteme:
+		- Als Eigenschaften für Suche werden immer Farbe, Textur, Form, Location,... benutzt um zu suchen.
+			- Unser Projekt soll auf Tags basieren. Frage die sich stellt: Wo kommen diese her?
+	- Problem auch hier wieder. Mensch hat hohe Anforderungen an Bild, Computer kann nur einfache Eigenschaften des Bilder herausfinden
+	- Bilderdatenbanken werden noramlerweise kategoriesiert - Analogie zu von uns verwendeten Tags
+	- Die menschlichen und semantischen Aspekte dürfen nicht zu sehr runter gebrochen werden
+
+FH Potsdam Semantische Bildsuche:
+	-unscharfe Bildersuchen liefern zu viele Ergebnisse
+	- In unserem Projekt sind viele Ergebnisse gewünscht zu Inspiration - aber Sortierung nach "Relevanz"
+	- Große Ergebnismenge müsste automatisch Sortiert werden. Passiert bei uns durch den Nutzer
+	- Kombination von verschiedenen Heransgehensweisen
+
+
+Eine Frage die sich stellt. Wer tagt unsere Bilderdatenbank  und wir gehen wir sicher das er es richtig tut

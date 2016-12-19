@@ -96,15 +96,17 @@ def main():
     index = parse_index()
 
     while True:
-        image_name = input("Enter image name: ").lower()
+        image_name = input("Enter image name: ")
         image_path = os.path.join(directory, image_name)
 
+        search_results = search(image_path, index)
+
         # Get the image id from the second lowest distance. The lowest distance is the searched image itself.
-        lowest_distance_id = search(image_path, index)[1][0]
+        lowest_distance_id = search_results[1][0]
       
         print("Most similar picture with id: %i" % lowest_distance_id)
 
-        results_file_path = saveResult(search(image_path, index))
+        results_file_path = saveResult(search_results)
 
         # check if on OSX
         if platform == "darwin":

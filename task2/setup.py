@@ -30,7 +30,7 @@ if sys.platform == 'darwin':
         app=APP,
         # Cross-platform applications generally expect sys.argv to
         # be used for opening files.
-        options=dict(py2app=dict(argv_emulation=True))
+        options=dict(py2app=dict(argv_emulation=True, packages=['PIL']))
     )
 elif sys.platform == 'win32':
     extra_options = dict(

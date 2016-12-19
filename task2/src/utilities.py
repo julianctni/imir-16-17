@@ -35,7 +35,7 @@ def saveResult( result ):
 
 	while count <= 100 or result[count][1] > 15:
 		html += '''
-		<div class="image-item">
+		<div class="image-item" style="display:inline-block">
 			<img src="PlantCLEF2016Test/'''
 
 		html += str(result[count][0]) +'.jpg">' 

@@ -33,15 +33,22 @@ def saveResult( result ):
 
 	count = 1
 
-	while count <= 100 or result[count][1] > 15:
-		html += '''
-		<div class="image-item">
-			<img src="PlantCLEF2016Test/'''
+	# show 50 results, no results with a distance greater 7.5 
 
-		html += str(result[count][0]) +'.jpg">' 
-		html += '<p> Image: ' + str(result[count][0]) + '.jpg, Distance: ' + str(result[count][1]) + '</p></div>'
+	while count <= 50:
+		try:
+			if result[count][1] > 7.5:
+				break
+			html += '''
+			<div class="image-item">
+				<img src="PlantCLEF2016Test/'''
 
-		count += 1
+			html += str(result[count][0]) +'.jpg">' 
+			html += '<p> Image: ' + str(result[count][0]) + '.jpg, Distance: ' + str(result[count][1]) + '</p></div>'
+
+			count += 1
+		except Exception:
+			break
 
 	html += '''
 			</body>

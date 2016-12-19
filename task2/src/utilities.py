@@ -1,8 +1,18 @@
+from os.path import dirname, abspath, join
+
+
+def get_base_dir():
+	base_directory = dirname(dirname(abspath(__file__)))
+	return base_directory
+
+
 def open_file(file_name, mode="r"):
     return open(file_name, mode, encoding='utf-8', errors='ignore')
 
+
 def saveResult( result ):
-	fileoutput = open("../result.html", "w+", encoding='utf-8', errors='ignore')
+	file_path = join(get_base_dir(), "result.html")
+	file_output = open_file(file_path, "w+")
 
 	html = ''' 
 	<!DOCTYPE html>
@@ -38,4 +48,6 @@ def saveResult( result ):
 		</html> 
 	'''
 
-	fileoutput.write( html ) 
+	file_output.write( html )
+
+	return file_path

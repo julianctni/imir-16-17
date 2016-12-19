@@ -2,6 +2,7 @@ import sys
 import os
 from timeit import default_timer as timer
 from analyze import createDescriptor
+from utilities import get_base_dir
 
 from xml.dom.minidom import parse
 import xml.dom.minidom
@@ -75,8 +76,8 @@ def main():
 	print("Color Layout Description Index Builder")
 	print("--------------------------------------")
 	start = timer()
-	directory = "PlantCLEF2016Test"
-	indexFilename = "index.csv"
+	index_file = os.path.join(get_base_dir(), "index.csv")
+	directory = os.path.join(get_base_dir(), "PlantCLEF2016Test/")
 	listdir = os.listdir(directory)
 	filecount = 0
 	progress = 0
@@ -112,7 +113,7 @@ def main():
 	print("Write index to file..")
 
 	# write all entrys to file
-	writeIndex(indexFilename)
+	writeIndex(index_file)
 
 	end = timer()
 	elapsed_time = end - start
@@ -120,4 +121,4 @@ def main():
 	print("Done in %.2fs" % elapsed_time)
 
 
-if __name__ == "__main__": main() 
+if __name__ == "__main__": main()

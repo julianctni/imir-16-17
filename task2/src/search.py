@@ -1,8 +1,9 @@
 import os
 import math
 import webbrowser
+from sys import platform
 from collections import defaultdict
-from utilities import open_file, saveResult
+from utilities import open_file, get_base_dir, saveResult
 from analyze import createDescriptor
 from buildIndex import getContentType
 
@@ -50,8 +51,10 @@ def search(image_path, index):
 
     return sorted_results
 
+
 def parse_index():
-    index_file = open_file("../assets/index.csv")
+    index_file_path = os.path.join(get_base_dir(), 'assets/index.csv')
+    index_file = open_file(index_file_path)
     index_lines = index_file.read().splitlines()
     index_count = len(index_lines)
 
@@ -89,7 +92,7 @@ def perform_search(image_path):
 
 
 def main():
-    directory = "../PlantCLEF2016Test"
+    directory = os.path.join(get_base_dir(), "PlantCLEF2016Test/")
     index = parse_index()
 
     while True:
@@ -101,9 +104,13 @@ def main():
       
         print("Most similar picture with id: %i" % lowest_distance_id)
 
-        saveResult(search(image_path, index))
+        results_file_path = saveResult(search(image_path, index))
 
-        webbrowser.open("../result.html")
+        # check if on OSX
+        if platform == "darwin":
+            results_file_path = "file:///" + results_file_path
+
+        webbrowser.get().open(results_file_path)
 
 
 if __name__ == "__main__":

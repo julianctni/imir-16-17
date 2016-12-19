@@ -68,7 +68,7 @@ Blobworld: A System for Region-Based Image Indexing and Retrieval:
 	- ähnliche Pixel werden zu Blobs/Gruppen zusammengefasst
 	- Suche:
 		- Suche anhand eines Bilder, welches in Blobs unterteilt wird
-		- Nutzer gibt an welche Blobs relevant sind und vergibt eine Gewichtung innerhakb dieser
+		- Nutzer gibt an welche Blobs relevant sind und vergibt eine Gewichtung innerhalb dieser
 		- 
 
 Image Retrieval: Current Techniques, Promising Directions, and Open Issues:
@@ -90,6 +90,14 @@ FH Potsdam Semantische Bildsuche:
 	- In unserem Projekt sind viele Ergebnisse gewünscht zu Inspiration - aber Sortierung nach "Relevanz"
 	- Große Ergebnismenge müsste automatisch Sortiert werden. Passiert bei uns durch den Nutzer
 	- Kombination von verschiedenen Heransgehensweisen
+
+Materializing the Query with Facet-Streams – A Hybrid Surface for Collaborative Search on Tabletops:
+	- Zuerst Grid an zB Hotels dargestellt
+	- Browsing Mode
+	- Filterung über hier über Tokens - Auswahl Filter, Wert/Spanne einstellen
+	- Bild von der UI hat ähnlichkeiten
+
+	
 
 
 Eine Frage die sich stellt. Wer tagt unsere Bilderdatenbank  und wir gehen wir sicher das er es richtig tut

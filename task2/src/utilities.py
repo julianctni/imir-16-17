@@ -33,9 +33,9 @@ def saveResult( result ):
 
 	count = 1
 
-	# show 75 results, no results with a distance greater 7.5 
+	# show 150 results, no results with a distance greater 7.5 
 
-	while count <= 75:
+	while count <= 150:
 		try:
 			if result[count][1] > 7.5:
 				break

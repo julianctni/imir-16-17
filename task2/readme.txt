@@ -11,7 +11,7 @@ Task 2 - Color Layout Descriptior Image Search
 
 1. Usage
 
-You need Python3 to use this program and have two options to start it.
+You need Python 3.5 to use this program and have two options to start it.
 Also make sure, you have the Pillow module for image analysis installed.
 
 The PlantCLEF2016 data set needs to be put in a folder called 'PlantCLEF2016Test' in the main directory.
@@ -41,9 +41,19 @@ For the GUI version you need the Tkinter module. You then can start the program 
 
 python3 app.py in the src folder. 
 
-You also have the option to build an executable version by running:
+You also have the option to build an executable version using the build script:
 
-python3 setup.py
+Will automatically ensure that all build prerequisites are available
+via ez_setup
+
+Usage (Mac OS X):
+    python setup.py py2app
+
+Usage (Windows):
+    python setup.py py2exe
+
+Usage (Unix):
+    python setup.py install
 
 A prebuild Mac OS version is included.
 
@@ -56,5 +66,7 @@ python3 buildIndex.py
 python3 search.py
 
 Building the index can take up to 20 minutes. To search for similar images, enter an imagename from the dataset (e.g. 113227.jpg)
+
+The result.html should automatically open in a web browser. It will display up to 150 results which have a smaller similarity distance than 7.5.
 
 The functionality was tested on Ubuntu 16.04 and OS X El Capitan, Version 10.11.6

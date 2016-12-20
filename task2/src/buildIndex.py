@@ -75,6 +75,8 @@ def main():
 	#
 	print("Color Layout Description Index Builder")
 	print("--------------------------------------")
+	print("this can take up to 20 mins..")
+	print()
 	start = timer()
 	index_file = os.path.join(get_base_dir(), "index.csv")
 	directory = os.path.join(get_base_dir(), "PlantCLEF2016Test/")

@@ -96,7 +96,8 @@ def main():
     index = parse_index()
 
     while True:
-        image_name = input("Enter image name: ")
+        print("Enter a filename from the PlantCLEF2016 set (e.g. 113227.jpg), Strg+C to exit")
+        image_name = input(": ")
         image_path = os.path.join(directory, image_name)
 
         search_results = search(image_path, index)
@@ -105,8 +106,10 @@ def main():
         lowest_distance_id = search_results[1][0]
       
         print("Most similar picture with id: %i" % lowest_distance_id)
-
         results_file_path = saveResult(search_results)
+
+        print("result.html written")
+        print()
 
         # check if on OSX
         if platform == "darwin":

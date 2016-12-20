@@ -23,9 +23,9 @@ def saveResult( result ):
 				<link rel="stylesheet" type="text/css" href="result.css">
 			</head>
 			<body>	
-				<div class="input-image-item">
+				<div class="image-item input">
 					<p>Input Picture:</p>
-					<img src="PlantCLEF2016Test/'''
+					<img class="input-img"src="PlantCLEF2016Test/'''
 	
 	
 	html += str(result[0][0]) +'.jpg">'
@@ -33,9 +33,9 @@ def saveResult( result ):
 
 	count = 1
 
-	# show 50 results, no results with a distance greater 7.5 
+	# show 75 results, no results with a distance greater 7.5 
 
-	while count <= 50:
+	while count <= 75:
 		try:
 			if result[count][1] > 7.5:
 				break
@@ -44,7 +44,7 @@ def saveResult( result ):
 				<img src="PlantCLEF2016Test/'''
 
 			html += str(result[count][0]) +'.jpg">' 
-			html += '<p> Image: ' + str(result[count][0]) + '.jpg, Distance: ' + str(result[count][1]) + '</p></div>'
+			html += '<p> Image: ' + str(result[count][0]) + '.jpg<br />Distance: ' + '{0:.2f}'.format(result[count][1]) + '</p></div>'
 
 			count += 1
 		except Exception:
